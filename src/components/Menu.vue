@@ -2,7 +2,7 @@
   <div>
     <nav class="nav">
       <div class="container">
-        <nav class="nav-row">
+        <div class="nav-row">
           <RouterLink to="/" class="logo"><strong>portfolio</strong></RouterLink>
           <ul class="nav-list">
             <li class="nav-list__item">
@@ -15,13 +15,16 @@
               <RouterLink to="/contacts" class="nav-list__link">Contacts</RouterLink>
             </li>
           </ul>
-        </nav>
+          <div class="burger">
+            <span></span>
+          </div>
+        </div>
       </div>
     </nav>
+    
     <Navbar />
   </div>
 </template>
-
 
 <script>
 import Projects from '../components/Projects.vue';
@@ -39,8 +42,29 @@ export default {
     Skills,
     Contact
   },
-};
 
+  mounted() {
+    const burger = document.querySelector('.burger');
+    const navList = document.querySelector('.nav-list');
+    const navLinks = document.querySelectorAll('.nav-list__link');
+    
+    if (burger && navList) {
+      burger.addEventListener('click', function() {
+        this.classList.toggle('active');
+        navList.classList.toggle('open');
+      });
+      
+      navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          burger.classList.remove('active');
+          navList.classList.remove('open');
+        });
+      });
+    } else {
+      console.error('Элементы с классами .burger или .nav-list не найдены.');
+    }
+  }
+};
 </script>
 
 <style>
@@ -101,5 +125,62 @@ main {
   border-bottom: none;
   padding-bottom: 0;
 }
+.burger{
+  display: none;
+  position: relative;
+  z-index: 50;
+  align-items: center;
+  justify-content: flex-end;
+  width: 30px;
+  height: 18px;
+}
+.burger span{
+  height: 2px;
+  width: 80%;
+  transform: scale(1);
+  background-color: #fff;
+}
+.burger::before, .burger::after{
+ content: '';
+ position: absolute;
+ height: 2px;
+ width: 100%;
+ background-color: #fff;
+ transition: all 0.3s ease 0s;
+}
+.burger::before {top: 0}
+.burger::after {bottom: 0;}
+
+.burger.active span {transform: scale(0)}
+ 
+.burger.active::before {
+  top: 50%;
+  transform: rotate(-45deg) translate(0, -50%);
+}
+.burger.active::after {
+  bottom: 50%;
+  transform: rotate(45deg) translate(0, 50%);
+}
+.open{
+  display: flex !important;
+}
+
+@media (max-width: 440px) {
+  .burger {
+    display: flex;
+  }
+
+  .nav-list {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav-list.open {
+    display: flex;
+  }
+}
 </style>
+
+
 
